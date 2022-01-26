@@ -1,5 +1,6 @@
 {
   "name": "game.chiao.io",
+  "homepage": "https://game.chiao.io/gate",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
