@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    connect();
+    // connect();
     // eslint-disable-next-line
   }, []);
 
