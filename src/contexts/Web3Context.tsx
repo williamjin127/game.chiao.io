@@ -40,7 +40,7 @@ export const Web3Provider = ({ children }: PropsWithChildren<any>) => {
       return;
     }
     const chainIdInt = parseInt(chainId);
-    if (chainIdInt !== 3) {
+    if (chainIdInt !== 3 && chainIdInt !== 97 && chainIdInt !== 4002) {
       showSnackbar({
         severity: "error",
         message: "Wrong network",

@@ -20,7 +20,6 @@ let web3Modal = new Web3Modal({
   providerOptions: {},
 });
 
-
 export const AuthProvider = ({ children }) => {
   const [address, setAddress] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -101,8 +100,81 @@ export const AuthProvider = ({ children }) => {
     setAddress(null);
   };
 
+  const switchNetwork = async (switchChainId) => {
+    const chainList = {
+      "0x3": "Ropsten Test Network",
+      "0x61": "Binance Test Network",
+      "0xfa2": "Fantom Test Network",
+    };
+
+    if (parseInt(""+chainId) === parseInt(switchChainId)) {
+      showSnackbar({
+        severity: "warning",
+        message: `You are already in ${chainList[switchChainId]}`,
+      });
+      return;
+    }
+
+    try {
+      await web3.currentProvider.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: switchChainId }],
+      });
+    } catch (err: any) {
+      if (err.code === 4902) {
+        showSnackbar({
+          severity: "error",
+          message: `Please add ${chainList[switchChainId]} to your Metamask`,
+        });
+      } else {
+        console.error(err);
+        showSnackbar({
+          severity: "error",
+          message: err as string,
+        });
+      }
+    }
+  };
+
+  const addToken = async () => {
+    if (!chainId) {
+      return;
+    }
+    try {
+      const chainIdInt = parseInt("" + chainId);
+      let contractAddress;
+      if (chainIdInt === 3) {
+        contractAddress = config.ERC20ContractAddress.ROPSTEN;
+      } else if (chainIdInt === 97) {
+        contractAddress = config.BEP20ContractAddress.TESTNET;
+      } else if (chainIdInt === 4002) {
+        return;
+      } else {
+        return;
+      }
+      await web3.currentProvider.request({
+        method: "wallet_watchAsset",
+        params: {
+          type: "ERC20",
+          options: {
+            address: contractAddress,
+            symbol: "CHIAO",
+            decimals: 18,
+            image: "https://game.chiao.io/comingsoon/wp-content/uploads/2021/12/CHIAOFLY-FINAL-3-rect-1000x-150x150.png",
+          },
+        },
+      });
+    } catch (err) {
+      console.error(err);
+      showSnackbar({
+        severity: "error",
+        message: err as string,
+      });
+    }
+  };
+
   useEffect(() => {
-    // connect();
+    connect();
     // eslint-disable-next-line
   }, []);
 
@@ -115,6 +187,8 @@ export const AuthProvider = ({ children }) => {
         loading,
         connect,
         disconnect,
+        switchNetwork,
+        addToken,
       }}
     >
       {children}

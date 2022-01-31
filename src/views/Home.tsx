@@ -11,22 +11,30 @@ import { config } from "../config";
 export default function Home() {
   // const { address, chainId, loading, connect, disconnect } =
   //   useContext(AuthContext);
-  const { address, chainId, loading, connect, disconnect } = useAuth();
+  const { address, chainId, loading, connect, disconnect, switchNetwork, addToken } =
+    useAuth();
   const {
     contracts: { tokenContract },
     wrongNetwork,
   } = useContracts();
   const { showSnackbar } = useSnackbar();
 
-  const [user, setUser] = useState({ address: "", chainId: 3 });
+  const [user, setUser] = useState({ address: "", chainId: 0 });
   const [balance, setBalance] = useState(0);
 
   const allowAmount = 100000000;
 
   const fetchInfo = async () => {
     if (!tokenContract || !address) {
+      setBalance(0);
       return;
     }
+    // Temp code
+    if (parseInt(chainId) !== 3) {
+      setBalance(0);
+      return;
+    }
+
     const balance = await tokenContract.methods.balanceOf(address).call();
     const balanceCHIAO = parseInt(Web3.utils.fromWei(`${balance}`, "ether"));
     setBalance(balanceCHIAO);
@@ -34,13 +42,15 @@ export default function Home() {
 
   useEffect(() => {
     if (!address || !chainId) {
-      setUser({ address: "", chainId: 3 });
+      setUser({ address: "", chainId: 0 });
       return;
     }
+    console.log(address, chainId, wrongNetwork);
     checkConnect();
     setUser({ address, chainId: parseInt(chainId) });
+    fetchInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, chainId, wrongNetwork]);
+  }, [address, chainId]);
 
   useEffect(() => {
     if (!tokenContract) {
@@ -58,18 +68,11 @@ export default function Home() {
       });
       return false;
     }
-    if (wrongNetwork) {
-      showSnackbar({
-        severity: "error",
-        message: "Please switch to Ethereum Ropsten Network",
-      });
-      return false;
-    }
     return true;
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Grid container flexDirection="column" justifyContent="center">
         <Grid item pt={3}>
           {address ? (
@@ -87,12 +90,42 @@ export default function Home() {
             </Button>
           )}
         </Grid>
-        {user.chainId !== 3 && (
-          <Grid item pt={3}>
-            <Typography fontSize={18} mt={2} color="red">
-              You need to switch to Ropsten network!
-            </Typography>
-          </Grid>
+        {address && (
+          <>
+            <Grid item pt={3}>
+              <Grid container spacing={1}>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    onClick={() => switchNetwork("0x3")}
+                  >
+                    Switch to Ethereum Ropsten
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    onClick={() => switchNetwork("0x61")}
+                  >
+                    Switch to Binance Testnet
+                  </Button>
+                </Grid>
+                <Grid item>
+                  <Button
+                    variant="contained"
+                    onClick={() => switchNetwork("0xfa2")}
+                  >
+                    Switch to Fantom Testnet
+                  </Button>
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid item pt={3}>
+              <Button variant="outlined" color="secondary" onClick={addToken}>
+                Add CHIAO to Metamask
+              </Button>
+            </Grid>
+          </>
         )}
         {address && balance > allowAmount ? (
           <Grid item pt={3}>
