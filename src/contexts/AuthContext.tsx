@@ -5,6 +5,7 @@ import Web3Modal from "web3modal";
 
 import { useSnackbar } from "./Snackbar";
 import { config } from "../config";
+import TokenLogo from "../assets/chiao.png";
 
 export const AuthContext = createContext<any>({
   address: null,
@@ -160,7 +161,8 @@ export const AuthProvider = ({ children }) => {
             address: contractAddress,
             symbol: "CHIAO",
             decimals: 18,
-            image: "https://game.chiao.io/comingsoon/wp-content/uploads/2021/12/CHIAOFLY-FINAL-3-rect-1000x-150x150.png",
+            image: TokenLogo,
+            // image: "https://game.chiao.io/comingsoon/wp-content/uploads/2021/12/CHIAOFLY-FINAL-3-rect-1000x-150x150.png",
           },
         },
       });
