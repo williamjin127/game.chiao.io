@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
-// import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import { useSnackbar } from "./Snackbar";
 import { config } from "../config";
@@ -16,9 +16,25 @@ export const AuthContext = createContext<any>({
   switchChain: () => null,
 });
 
+const providerOptions = {
+  walletconnect: {
+    package: WalletConnectProvider, // required
+    options: {
+      infuraId: "5bf584270fd54c27804e0fc24032b2b5",
+      rpc: {
+        // 1: config.JSON_RPC.ETH_MAINNET,
+        3: config.JSON_RPC.ETH_ROPSTEN,
+        // 56: config.JSON_RPC.BSC_MAINNET,
+        97: config.JSON_RPC.BSC_TESTNET,
+        4002: config.JSON_RPC.FTM_TESTNET,
+      },
+    },
+  },
+};
+
 let web3Modal = new Web3Modal({
   cacheProvider: true,
-  providerOptions: {},
+  providerOptions,
 });
 
 export const AuthProvider = ({ children }) => {
@@ -103,15 +119,33 @@ export const AuthProvider = ({ children }) => {
 
   const switchNetwork = async (switchChainId) => {
     const chainList = {
-      "0x3": "Ropsten Test Network",
-      "0x61": "Binance Test Network",
-      "0xfa2": "Fantom Test Network",
+      "0x3": {
+        chainName: "Ropsten Test Network",
+        symbol: "ETH",
+        decimal: 18,
+        rpcUrls: [config.JSON_RPC.ETH_ROPSTEN],
+        blockExplorerUrls: ["https://ropsten.etherscan.io"],
+      },
+      "0x61": {
+        chainName: "Binance Testnet",
+        symbol: "BNB",
+        decimal: 18,
+        rpcUrls: [config.JSON_RPC.BSC_TESTNET],
+        blockExplorerUrls: ["https://testnet.bscscan.com"],
+      },
+      "0xfa2": {
+        chainName: "Fantom Testnet",
+        symbol: "FTM",
+        decimal: 18,
+        rpcUrls: [config.JSON_RPC.FTM_TESTNET],
+        blockExplorerUrls: ["https://testnet.ftmscan.com"],
+      },
     };
 
-    if (parseInt(""+chainId) === parseInt(switchChainId)) {
+    if (parseInt("" + chainId) === parseInt(switchChainId)) {
       showSnackbar({
         severity: "warning",
-        message: `You are already in ${chainList[switchChainId]}`,
+        message: `You are already in ${chainList[switchChainId].chainName}`,
       });
       return;
     }
@@ -123,16 +157,31 @@ export const AuthProvider = ({ children }) => {
       });
     } catch (err: any) {
       if (err.code === 4902) {
-        showSnackbar({
-          severity: "error",
-          message: `Please add ${chainList[switchChainId]} to your Metamask`,
-        });
+        try {
+          await web3.currentProvider.request({
+            method: "wallet_addEthereumChain",
+            params: [
+              {
+                chainId: switchChainId,
+                chainName: chainList[switchChainId].chainName,
+                nativeCurrency: {
+                  symbol: chainList[switchChainId].symbol,
+                  decimals: chainList[switchChainId].decimal,
+                },
+                rpcUrls: chainList[switchChainId].rpcUrls,
+                blockExplorerUrls: chainList[switchChainId].blockExplorerUrls,
+              },
+            ],
+          });
+          showSnackbar({
+            severity: "info",
+            message: `Added ${chainList[switchChainId].chainName} to your Metamask`,
+          });
+        } catch (err: any) {
+          console.log(err);
+        }
       } else {
         console.error(err);
-        showSnackbar({
-          severity: "error",
-          message: err as string,
-        });
       }
     }
   };
@@ -161,8 +210,7 @@ export const AuthProvider = ({ children }) => {
             address: contractAddress,
             symbol: "CHIAO",
             decimals: 18,
-            image: TokenLogo,
-            // image: "https://game.chiao.io/comingsoon/wp-content/uploads/2021/12/CHIAOFLY-FINAL-3-rect-1000x-150x150.png",
+            image: window.location.origin + TokenLogo,
           },
         },
       });
@@ -176,7 +224,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    connect();
+    // connect();
     // eslint-disable-next-line
   }, []);
 
