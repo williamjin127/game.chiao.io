@@ -1,3 +1,4 @@
+import React from "react";
 import { Box } from "@mui/material";
 import { lazy, Suspense } from "react";
 import { Switch } from "react-router";
@@ -20,6 +21,7 @@ function App() {
           </Suspense>
         </Switch>
       </Box>
+      <Header />
     </>
   );
 }

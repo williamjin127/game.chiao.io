@@ -20,7 +20,7 @@ const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider, // required
     options: {
-      infuraId: "5bf584270fd54c27804e0fc24032b2b5",
+      infuraId: config.INFURA_ID,
       rpc: {
         // 1: config.JSON_RPC.ETH_MAINNET,
         3: config.JSON_RPC.ETH_ROPSTEN,

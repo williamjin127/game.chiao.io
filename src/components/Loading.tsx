@@ -1,6 +1,6 @@
+import React, { memo } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { styled } from "@mui/material/styles";
-import { memo } from "react";
 
 const Wrapper = styled("div")({
   position: "fixed",

@@ -13,8 +13,8 @@ import ThemeProvider from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-    <CssBaseline />
     <ThemeProvider>
+      <CssBaseline />
       <SnackbarProvider>
         <Router>
           <AuthProvider>

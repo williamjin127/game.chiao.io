@@ -1,5 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { PropsWithChildren } from "react";
+import fonts from "./fonts";
 
 const theme = createTheme({
   palette: {
@@ -11,9 +12,14 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Rubik",
+    fontFamily: "Signika, Changa",
   },
   components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        "@font-face": fonts
+      }
+    },
     MuiLink: {
       styleOverrides: {
         root: {
@@ -21,7 +27,7 @@ const theme = createTheme({
         },
       },
     },
-  }
+  },
 });
 
 export default function Palette({ children }: PropsWithChildren<{}>) {
