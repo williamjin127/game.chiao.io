@@ -1,6 +1,6 @@
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { PropsWithChildren } from "react";
-import fonts from "./fonts";
+import { Signika } from "./fonts";
 
 const theme = createTheme({
   palette: {
@@ -16,9 +16,9 @@ const theme = createTheme({
   },
   components: {
     MuiCssBaseline: {
-      styleOverrides: {
-        "@font-face": fonts
-      }
+      styleOverrides: `
+        ${Signika}
+      `
     },
     MuiLink: {
       styleOverrides: {

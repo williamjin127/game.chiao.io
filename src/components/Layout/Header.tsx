@@ -3,13 +3,14 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { Container } from "@mui/material";
-import Logo from "../assets/logo.png";
+import { AppBar, Container } from "@mui/material";
 
-import { minimizeAddress } from "../helper/utils";
-import useAuth from "../hooks/useAuth";
+import Logo from "../../assets/logo.png";
 
-export const Footer = () => {
+import { minimizeAddress } from "../../helper/utils";
+import useAuth from "../../hooks/useAuth";
+
+const Header = () => {
   const { address, loading, connect, disconnect } = useAuth();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -29,7 +30,7 @@ export const Footer = () => {
   };
 
   return (
-    <div className="footer">
+    <AppBar position="fixed">
       <Container maxWidth="md">
         <Grid
           container
@@ -77,6 +78,8 @@ export const Footer = () => {
           </Grid>
         </Grid>
       </Container>
-    </div>
+    </AppBar>
   );
 };
+
+export default Header;
