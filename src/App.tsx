@@ -10,15 +10,17 @@ import { styled } from "@mui/material/styles";
 
 const AppContent = styled(Box)({
     width: "100%",
-    height: "100vh",
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundImage: "radial-gradient(at center center, rgb(57, 24, 68) 0%, rgb(32, 14, 38) 100%)"
+    backgroundImage: "radial-gradient(at center center, rgb(57, 24, 68) 0%, rgb(32, 14, 38) 100%)",
+    padding: "30px 0"
 });
 
 const Home = lazy(() => import("./views/Home"));
+const Play = lazy(() => import("./views/Play"));
 
 function App() {
     return (
@@ -29,6 +31,9 @@ function App() {
                     <Suspense fallback={<Loading />}>
                         <Route path="/" exact>
                             <Home />
+                        </Route>
+                        <Route path="/play" exact>
+                            <Play />
                         </Route>
                     </Suspense>
                 </Switch>

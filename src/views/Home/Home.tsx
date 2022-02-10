@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import Web3 from "web3";
-import { Button, Container, Grid, Typography } from "@mui/material";
-
+import { Container, Grid, Typography } from "@mui/material";
+import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import { useContracts } from "../../contexts/Web3Context";
 import { useSnackbar } from "../../contexts/Snackbar";
@@ -10,6 +10,7 @@ import { config } from "../../config";
 import ChiaoBanner from "../../components/ChiaoBanner";
 import BigOutlinedButton from "../../components/BigOutlinedButton";
 import HomeWrapper from "./Style";
+import { formatBalance } from "../../helper/utils";
 
 export default function Home() {
     // const { address, chainId, loading, connect, disconnect } =
@@ -26,6 +27,7 @@ export default function Home() {
     const [balance, setBalance] = useState(0);
 
     const allowAmount = 100000000;
+    const history = useHistory();
 
     const fetchInfo = async () => {
         if (!tokenContract || !address) {
@@ -74,9 +76,17 @@ export default function Home() {
         return true;
     };
 
+    const goToPlay = () => {
+        history.push("/play");
+    };
+
+    const handleTokenPurchase = () => {
+
+    };
+
     return (
         <HomeWrapper>
-            <Container maxWidth="md" className="HomePage">
+            <Container maxWidth="xl">
                 <Grid container flexDirection="column" justifyContent="center">
                     <Grid item pt={3}>
                         <ChiaoBanner />
@@ -91,6 +101,7 @@ export default function Home() {
                                 <BigOutlinedButton
                                     disabled={loading}
                                     variant="outlined"
+                                    color="warning"
                                     onClick={connect}
                                 >
                                     Connect Wallet
@@ -106,7 +117,7 @@ export default function Home() {
                         {address && (
                             <Grid container flexDirection="column" alignItems="center">
                                 <Grid item pt={3}>
-                                    <BigOutlinedButton variant="outlined" color="secondary" onClick={addToken}>
+                                    <BigOutlinedButton variant="outlined" color="success" onClick={addToken}>
                                         Add $CHIAO To Metamask
                                     </BigOutlinedButton>
                                 </Grid>
@@ -115,26 +126,29 @@ export default function Home() {
                                         <Typography fontSize={28} mt={2} color="#fff">
                                             Choose Your Network:
                                         </Typography>
-                                        <Grid container spacing={1}>
-                                            <Grid item>
+                                        <Grid container spacing={1} pt={1}>
+                                            <Grid item flex={1}>
                                                 <BigOutlinedButton
-                                                    variant="contained"
+                                                    variant="outlined"
+                                                    color="warning"
                                                     onClick={() => switchNetwork("0x3")}
                                                 >
                                                     Ethereum
                                                 </BigOutlinedButton>
                                             </Grid>
-                                            <Grid item>
+                                            <Grid item flex={1}>
                                                 <BigOutlinedButton
-                                                    variant="contained"
+                                                    variant="outlined"
+                                                    color="warning"
                                                     onClick={() => switchNetwork("0x61")}
                                                 >
                                                     Binance Smart Chain
                                                 </BigOutlinedButton>
                                             </Grid>
-                                            <Grid item>
+                                            <Grid item flex={1}>
                                                 <BigOutlinedButton
-                                                    variant="contained"
+                                                    variant="outlined"
+                                                    color="warning"
                                                     onClick={() => switchNetwork("0xfa2")}
                                                 >
                                                     Fantom Opera
@@ -145,9 +159,49 @@ export default function Home() {
                                 </Grid>
                                 <Grid item pt={3}>
                                     <Typography fontSize={28} mt={2} color="#fff">
-                                        Your $CHIAO balance: <span className="chiao-value">${balance}</span>
+                                        Your $CHIAO balance: <span className={`chiao-value ${balance > allowAmount ? 'greater-than' : 'less-than'}`}>{formatBalance(balance)}</span>
                                     </Typography>
                                 </Grid>
+                                {balance > allowAmount ? (
+                                    <Grid item pt={3}>
+                                        <Grid container direction="column" alignItems="center">
+                                            <Grid item>
+                                                <Typography fontSize={28} color="#fff" mb={2}>
+                                                    Congrats! You have enough $CHIAO to play.
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item>
+                                                <BigOutlinedButton
+                                                    variant="outlined"
+                                                    color="success"
+                                                    onClick={() => goToPlay()}
+                                                >
+                                                    Enter Chiao Fly
+                                                </BigOutlinedButton>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                ) : (
+                                    <Grid item pt={3}>
+                                        <Grid container direction="column" alignItems="center">
+                                            <Grid item>
+                                                <Typography fontSize={28} color="#fff">
+                                                    To play Chiao Fly, you must hold at least 100M $CHIAO Tokens.<br />
+                                                    You can win $CHIAO token for FREE in <a href="#" className="chiao-purchase-link">Discord</a> or just Buy them:
+                                                </Typography>
+                                            </Grid>
+                                            <Grid item mt={2}>
+                                                <BigOutlinedButton
+                                                    variant="outlined"
+                                                    color="success"
+                                                    onClick={() => handleTokenPurchase()}
+                                                >
+                                                    Buy $CHIAO
+                                                </BigOutlinedButton>
+                                            </Grid>
+                                        </Grid>
+                                    </Grid>
+                                )}
                             </Grid>
                         )}
                     </Grid>

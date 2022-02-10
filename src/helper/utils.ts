@@ -8,3 +8,11 @@ export const minimizeAddress = (address: string, start = 14, end = -11) =>
 
 export const sameAddress = (addr1: string, addr2: string) =>
   addr1?.toLowerCase() === addr2?.toLowerCase();
+
+export const formatBalance = (balance) =>
+    new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        maximumFractionDigits: 0,
+        minimumFractionDigits: 0,
+    }).format(balance);

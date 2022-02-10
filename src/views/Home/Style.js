@@ -7,10 +7,23 @@ export default styled('div')`
     color: #F9F9F5;
     line-height: 1;
     margin-bottom: 15px;
-  }
-  
+  }  
   .chiao-value {
     font-weight: 500;
-    color: red;
+    
+    &.less-than {
+      color: red;
+    }
+    &.greater-than {
+      color: lime;
+    }
+  }
+  
+  .chiao-purchase-link {
+    color: aqua;    
+    transition-duration: 0.25s;
+    &:hover {
+      color: purple;
+    }
   }
 `;
