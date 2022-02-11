@@ -1,27 +1,24 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Web3 from "web3";
+import { useHistory } from "react-router-dom";
 import { Container, Grid, Typography } from "@mui/material";
-
-import { AuthContext } from "../../contexts/AuthContext";
 import { useContracts } from "../../contexts/Web3Context";
 import { useSnackbar } from "../../contexts/Snackbar";
 import useAuth from "../../hooks/useAuth";
-import { config } from "../../config";
 import { formatBalance } from "../../helper/utils";
 import GameStage from "../../components/GameStage";
 import PlayWrapper from "./Style";
 
+const AllowAmount = 100000000;
+
 export default function Play() {
-    // const { address, chainId, loading, connect, disconnect } =
-    //   useContext(AuthContext);
-    const { address, chainId, loading, connect, disconnect, switchNetwork, addToken } = useAuth();
+    const history = useHistory()
+    const { address, chainId } = useAuth();
     const {
         contracts: { tokenContract },
         wrongNetwork,
     } = useContracts();
     const { showSnackbar } = useSnackbar();
-
-    const [user, setUser] = useState({ address: "", chainId: 0 });
     const [balance, setBalance] = useState(0);
 
     const fetchInfo = async () => {
@@ -41,15 +38,10 @@ export default function Play() {
     };
 
     useEffect(() => {
-        if (!address || !chainId) {
-            setUser({ address: "", chainId: 0 });
-            return;
+        const isConnected = checkConnect();
+        if (isConnected) {
+            fetchInfo();
         }
-        console.log(address, chainId, wrongNetwork);
-        checkConnect();
-        setUser({ address, chainId: parseInt(chainId) });
-        fetchInfo();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [address, chainId]);
 
     useEffect(() => {
@@ -70,6 +62,15 @@ export default function Play() {
         }
         return true;
     };
+
+    if (balance < AllowAmount) {
+        showSnackbar({
+            severity: "error",
+            message: "You don't have the sufficient balance.",
+        });
+
+        history.push("/");
+    }
 
     return (
         <PlayWrapper>

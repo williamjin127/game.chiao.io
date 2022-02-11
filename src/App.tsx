@@ -26,7 +26,14 @@ function App() {
     return (
         <>
             <AppContent>
-                <SocialButtons />
+                <SocialButtons
+                    facebook="https://www.facebook.com/ChiaotzuInuToken"
+                    twitter="https://twitter.com/chiaotoken"
+                    discord="https://discord.io/CHIAO"
+                    telegram="https://chiao.io/telegram"
+                    reddit="https://www.reddit.com/r/chiaotoken/"
+                    instagram="https://www.instagram.com/chiaotzuinu/"
+                />
                 <Switch>
                     <Suspense fallback={<Loading />}>
                         <Route path="/" exact>

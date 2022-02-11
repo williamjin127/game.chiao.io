@@ -1,20 +1,16 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Web3 from "web3";
 import { Container, Grid, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
-import { AuthContext } from "../../contexts/AuthContext";
 import { useContracts } from "../../contexts/Web3Context";
 import { useSnackbar } from "../../contexts/Snackbar";
 import useAuth from "../../hooks/useAuth";
-import { config } from "../../config";
 import ChiaoBanner from "../../components/ChiaoBanner";
 import BigOutlinedButton from "../../components/BigOutlinedButton";
 import HomeWrapper from "./Style";
 import { formatBalance } from "../../helper/utils";
 
 export default function Home() {
-    // const { address, chainId, loading, connect, disconnect } =
-    //   useContext(AuthContext);
     const { address, chainId, loading, connect, disconnect, switchNetwork, addToken } =
         useAuth();
     const {
@@ -100,8 +96,7 @@ export default function Home() {
                                 </div>
                                 <BigOutlinedButton
                                     disabled={loading}
-                                    variant="outlined"
-                                    color="warning"
+                                    color="#FEAC00"
                                     onClick={connect}
                                 >
                                     Connect Wallet
@@ -117,20 +112,14 @@ export default function Home() {
                         {address && (
                             <Grid container flexDirection="column" alignItems="center">
                                 <Grid item pt={3}>
-                                    <BigOutlinedButton variant="outlined" color="success" onClick={addToken}>
-                                        Add $CHIAO To Metamask
-                                    </BigOutlinedButton>
-                                </Grid>
-                                <Grid item pt={3}>
                                     <Grid container flexDirection="column" alignItems="center">
                                         <Typography fontSize={28} mt={2} color="#fff">
                                             Choose Your Network:
                                         </Typography>
-                                        <Grid container spacing={1} pt={1}>
+                                        <Grid container pt={1} spacing={3} justifyContent="space-between">
                                             <Grid item flex={1}>
                                                 <BigOutlinedButton
-                                                    variant="outlined"
-                                                    color="warning"
+                                                    color="#FEAC00"
                                                     onClick={() => switchNetwork("0x3")}
                                                 >
                                                     Ethereum
@@ -138,8 +127,7 @@ export default function Home() {
                                             </Grid>
                                             <Grid item flex={1}>
                                                 <BigOutlinedButton
-                                                    variant="outlined"
-                                                    color="warning"
+                                                    color="#FEAC00"
                                                     onClick={() => switchNetwork("0x61")}
                                                 >
                                                     Binance Smart Chain
@@ -147,8 +135,7 @@ export default function Home() {
                                             </Grid>
                                             <Grid item flex={1}>
                                                 <BigOutlinedButton
-                                                    variant="outlined"
-                                                    color="warning"
+                                                    color="#FEAC00"
                                                     onClick={() => switchNetwork("0xfa2")}
                                                 >
                                                     Fantom Opera
@@ -158,6 +145,9 @@ export default function Home() {
                                     </Grid>
                                 </Grid>
                                 <Grid item pt={3}>
+                                    <BigOutlinedButton color="#6AE707" onClick={addToken}>
+                                        Add $CHIAO To Metamask
+                                    </BigOutlinedButton>
                                     <Typography fontSize={28} mt={2} color="#fff">
                                         Your $CHIAO balance: <span className={`chiao-value ${balance > allowAmount ? 'greater-than' : 'less-than'}`}>{formatBalance(balance)}</span>
                                     </Typography>
@@ -172,7 +162,6 @@ export default function Home() {
                                             </Grid>
                                             <Grid item>
                                                 <BigOutlinedButton
-                                                    variant="outlined"
                                                     color="success"
                                                     onClick={() => goToPlay()}
                                                 >
@@ -187,13 +176,12 @@ export default function Home() {
                                             <Grid item>
                                                 <Typography fontSize={28} color="#fff">
                                                     To play Chiao Fly, you must hold at least 100M $CHIAO Tokens.<br />
-                                                    You can win $CHIAO token for FREE in <a href="#" className="chiao-purchase-link">Discord</a> or just Buy them:
+                                                    You can win $CHIAO token for FREE in <a href="https://chiao.io/wp-content/uploads/2022/01/Disclaimer.txt" className="chiao-purchase-link">Discord</a> or just Buy them:
                                                 </Typography>
                                             </Grid>
                                             <Grid item mt={2}>
                                                 <BigOutlinedButton
-                                                    variant="outlined"
-                                                    color="success"
+                                                    color="#6AE707"
                                                     onClick={() => handleTokenPurchase()}
                                                 >
                                                     Buy $CHIAO
