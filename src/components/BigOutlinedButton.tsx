@@ -16,7 +16,7 @@ const BigOutlinedButton = styled(ButtonBase)(({color, ...rest}) => (`
     max-width: 300px;
     width: 100%;
     
-    &:hover {
+    &:target {
         background-color: ${color};
     }
 `));
