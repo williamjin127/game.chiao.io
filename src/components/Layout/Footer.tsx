@@ -25,6 +25,7 @@ const Footer = () => {
           direction="column"
           justifyContent="center"
           alignItems="center"
+          height="92px"
         >
           <h2>Disclaimer</h2>
           <div>Copyright Chiaotzu Inu &copy; {new Date().getFullYear()}</div>

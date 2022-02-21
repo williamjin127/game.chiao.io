@@ -8,7 +8,7 @@ const theme = createTheme({
       main: "#eaeaea",
     },
     secondary: {
-      main: "#273a4c",
+      main: "#FEAC00",
     },
   },
   typography: {
@@ -27,6 +27,14 @@ const theme = createTheme({
         },
       },
     },
+    MuiMenu: {
+      styleOverrides: {
+        list: {
+          backgroundColor: "rgb(57, 24, 68)",
+          color: "#FBF3F3",
+        }
+      }
+    }
   },
 });
 

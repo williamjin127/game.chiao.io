@@ -12,13 +12,11 @@ import PlayWrapper from "./Style";
 const AllowAmount = 100000000;
 
 export default function Play() {
-    const history = useHistory()
     const { address, chainId } = useAuth();
     const {
         contracts: { tokenContract },
         wrongNetwork,
     } = useContracts();
-    const { showSnackbar } = useSnackbar();
     const [balance, setBalance] = useState(0);
 
     const fetchInfo = async () => {
@@ -38,46 +36,28 @@ export default function Play() {
     };
 
     useEffect(() => {
-        const isConnected = checkConnect();
-        if (isConnected) {
-            fetchInfo();
-        }
-    }, [address, chainId]);
-
-    useEffect(() => {
-        if (!tokenContract) {
-            return;
-        }
         fetchInfo();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tokenContract]);
-
-    const checkConnect = () => {
-        if (!address) {
-            showSnackbar({
-                severity: "error",
-                message: "Please connect your wallet.",
-            });
-            return false;
-        }
-        return true;
-    };
-
-    if (balance < AllowAmount) {
-        showSnackbar({
-            severity: "error",
-            message: "You don't have the sufficient balance.",
-        });
-
-        history.push("/");
-    }
+    }, [address, chainId, tokenContract]);
 
     return (
         <PlayWrapper>
             <Container maxWidth="xl">
                 <Grid container flexDirection="column" alignItems="center">
                     <Grid item pt={3}>
-                        <GameStage />
+                        {balance >= AllowAmount ? (
+                            <GameStage /> 
+                        ) : (
+                            address ? (
+                                <Typography fontSize={28} mt={2} color="#fff">
+                                    You don't have enough $CHIAO balance.
+                                </Typography>
+                            ) : (
+                                <Typography fontSize={28} mt={2} color="#fff">
+                                    You have to connect wallet.
+                                </Typography>
+                            )
+                        )}
                     </Grid>
                     <Grid item pt={3}>
                         <Typography fontSize={28} mt={2} color="#fff">

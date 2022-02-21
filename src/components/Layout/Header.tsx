@@ -5,7 +5,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { AppBar, Container } from "@mui/material";
 
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/chiao64.png";
 
 import { minimizeAddress } from "../../helper/utils";
 import useAuth from "../../hooks/useAuth";
@@ -30,8 +30,11 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="fixed">
-      <Container maxWidth="md">
+    <AppBar
+      position="fixed"
+      style={{ background: "rgba(32, 14, 38, 0.9)", boxShadow: "none" }}
+    >
+      <Container maxWidth="lg">
         <Grid
           container
           justifyContent="space-between"
@@ -40,7 +43,7 @@ const Header = () => {
         >
           <Grid item>
             <Grid container alignItems="center">
-              <img src={Logo} width={200} alt="Open Oasis" />
+              {/* <img src={Logo} width={50} alt="Chiao" /> */}
             </Grid>
           </Grid>
 

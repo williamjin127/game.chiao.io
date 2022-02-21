@@ -9,6 +9,7 @@ import ChiaoBanner from "../../components/ChiaoBanner";
 import BigOutlinedButton from "../../components/BigOutlinedButton";
 import HomeWrapper from "./Style";
 import { formatBalance } from "../../helper/utils";
+import Header from "../../components/Layout/Header";
 
 export default function Home() {
     const { address, chainId, loading, connect, disconnect, switchNetwork, addToken } =
@@ -105,12 +106,6 @@ export default function Home() {
                                         Connect Wallet
                                     </BigOutlinedButton>
                                 </Grid>
-                                <Grid item mt={2} className="text-center">
-                                    <Typography fontSize={18} mt={2} color="#fff">
-                                        You need to connect your Metamask and have 100M CHIAO token to see
-                                        content.
-                                    </Typography>
-                                </Grid>
                             </Grid>
                         )}
 
@@ -162,13 +157,13 @@ export default function Home() {
                                         </Grid>
                                         <Grid item>
                                             <Typography fontSize={28} mt={2} color="#fff" align="center">
-                                                Your $CHIAO balance: <span className={`chiao-value ${balance > allowAmount ? 'greater-than' : 'less-than'}`}>{formatBalance(balance)}</span>
+                                                Your $CHIAO balance: <span className={`chiao-value ${balance >= allowAmount ? 'greater-than' : 'less-than'}`}>{formatBalance(balance)}</span>
                                             </Typography>
                                         </Grid>
 
                                     </Grid>
                                 </Grid>
-                                {balance > allowAmount ? (
+                                {balance >= allowAmount ? (
                                     <Grid item pt={3}>
                                         <Grid container direction="column" alignItems="center">
                                             <Grid item>
