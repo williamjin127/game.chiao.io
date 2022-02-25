@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { isMobile } from 'react-device-detect';
 
 import { useSnackbar } from "./Snackbar";
 import { config } from "../config";
@@ -22,8 +23,8 @@ const providerOptions = {
     options: {
       infuraId: config.INFURA_ID,
       rpc: {
-        // 1: config.JSON_RPC.ETH_MAINNET,
-        3: config.JSON_RPC.ETH_ROPSTEN,
+        1: config.JSON_RPC.ETH_MAINNET,
+        // 3: config.JSON_RPC.ETH_ROPSTEN,
         // 56: config.JSON_RPC.BSC_MAINNET,
         97: config.JSON_RPC.BSC_TESTNET,
         4002: config.JSON_RPC.FTM_TESTNET,
@@ -33,8 +34,10 @@ const providerOptions = {
 };
 
 let web3Modal = new Web3Modal({
+  network: "mainnet",
   cacheProvider: true,
   providerOptions,
+  // disableInjectedProvider: true,
 });
 
 export const AuthProvider = ({ children }) => {
@@ -77,7 +80,7 @@ export const AuthProvider = ({ children }) => {
     try {
       let web3 = new Web3(Web3.givenProvider);
 
-      if (!web3.currentProvider) {
+      if (!isMobile && !web3.currentProvider) {
         showSnackbar({
           severity: "error",
           message: "Please install MetaMask!",
@@ -119,6 +122,13 @@ export const AuthProvider = ({ children }) => {
 
   const switchNetwork = async (switchChainId) => {
     const chainList = {
+      "0x1": {
+        chainName: "Ethereum Network",
+        symbol: "ETH",
+        decimal: 18,
+        rpcUrls: [config.JSON_RPC.ETH_MAINNET],
+        blockExplorerUrls: ["https://etherscan.io"],
+      },
       "0x3": {
         chainName: "Ropsten Test Network",
         symbol: "ETH",
@@ -193,7 +203,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const chainIdInt = parseInt("" + chainId);
       let contractAddress;
-      if (chainIdInt === 3) {
+      if (chainIdInt === 1) {
+        contractAddress = config.ERC20ContractAddress.MAINNET;
+      } else if (chainIdInt === 3) {
         contractAddress = config.ERC20ContractAddress.ROPSTEN;
       } else if (chainIdInt === 97) {
         contractAddress = config.BEP20ContractAddress.TESTNET;
@@ -224,7 +236,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // connect();
+    // if (!isMobile) {
+    //   connect();
+    // }
     // eslint-disable-next-line
   }, []);
 

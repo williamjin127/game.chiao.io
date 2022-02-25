@@ -1,25 +1,37 @@
 import React from "react";
-import ChiaoGameScreen from "../assets/CHIAO-Force-Game.jpg";
 
 import { styled } from "@mui/material/styles";
+import { Container, Grid, Typography } from "@mui/material";
 
-const ChiaoGameWrapper = styled('div')`
-    display: flex;
-    justify-content: center;
+import useWindowDimensions from "../hooks/useWindowDimensions";
+
+const ChiaoGameWrapper = styled("div")`
+  display: flex;
+  justify-content: center;
+  position: relative;
+  max-width: 600px;
+  height: 0;
+  padding-bottom: 125%;
+
+  iframe {
+    position: absolute;
     width: 100%;
-    
-    img {
-        width: 100%;
-        max-width: 500px;
-    }
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
 `;
 
 const GameStage = () => {
-    return (
-        <ChiaoGameWrapper>
-            <img src={ChiaoGameScreen} width={500} alt="Chiao Game" />
-        </ChiaoGameWrapper>
-    );
+  const { height, width } = useWindowDimensions();
+
+  return (
+    <ChiaoGameWrapper
+      sx={{ width: width > 1280 ? (height > 800 ? 600 : 400) : "90vw" }}
+    >
+      <iframe src="https://gate.chiao.io"></iframe>
+    </ChiaoGameWrapper>
+  );
 };
 
 export default GameStage;

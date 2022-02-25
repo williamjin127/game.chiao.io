@@ -40,7 +40,7 @@ export const Web3Provider = ({ children }: PropsWithChildren<any>) => {
       return;
     }
     const chainIdInt = parseInt(chainId);
-    if (chainIdInt !== 3 && chainIdInt !== 97 && chainIdInt !== 4002) {
+    if (chainIdInt !== 1 && chainIdInt !== 3 && chainIdInt !== 97 && chainIdInt !== 4002) {
       showSnackbar({
         severity: "error",
         message: "Wrong network",
@@ -50,7 +50,7 @@ export const Web3Provider = ({ children }: PropsWithChildren<any>) => {
     }
     setWrongNetwork(false);
 
-    const contractAddress = config.ERC20ContractAddress.ROPSTEN;
+    const contractAddress = config.ERC20ContractAddress.MAINNET;
     const tokenContract = new web3.eth.Contract(
       tokenABI as any,
       contractAddress

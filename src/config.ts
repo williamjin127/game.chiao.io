@@ -1,5 +1,6 @@
 export const config = {
   ERC20ContractAddress: {
+    MAINNET: "0xa0ccb6BEb58C9ac68Ba2f24F4CE340992e828b29",
     ROPSTEN: "0xec3f54e70facb7b2fc84ecf73cf2aa61fa2fc141",
   },
   BEP20ContractAddress: {
