@@ -18,7 +18,7 @@ const theme = createTheme({
     MuiCssBaseline: {
       styleOverrides: `
         ${Signika}
-      `
+      `,
     },
     MuiLink: {
       styleOverrides: {
@@ -32,9 +32,41 @@ const theme = createTheme({
         list: {
           backgroundColor: "rgb(57, 24, 68)",
           color: "#FBF3F3",
-        }
-      }
-    }
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: "white",
+          "&.Mui-selected": {
+            color: "white",
+          },
+        },
+      },
+    },
+    MuiTableContainer: {
+      styleOverrides: {
+        root: {
+          border: "1px solid #FEAC00",
+          color: "white",
+        },
+      },
+    },
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          border: "1px solid #FEAC00",
+        },
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          color: "white",
+        },
+      },
+    },
   },
 });
 

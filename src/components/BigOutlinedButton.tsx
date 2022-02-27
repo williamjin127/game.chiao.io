@@ -1,4 +1,3 @@
-import React from "react";
 import { ButtonBase, styled } from "@mui/material";
 
 const BigOutlinedButton = styled(ButtonBase)(({color, ...rest}) => (`

@@ -1,7 +1,4 @@
-import React from "react";
-
 import { styled } from "@mui/material/styles";
-import { Container, Grid, Typography } from "@mui/material";
 
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
@@ -22,14 +19,14 @@ const ChiaoGameWrapper = styled("div")`
   }
 `;
 
-const GameStage = () => {
+const GameStage = ({address}) => {
   const { height, width } = useWindowDimensions();
 
   return (
     <ChiaoGameWrapper
       sx={{ width: width > 1280 ? (height > 800 ? 600 : 400) : "90vw" }}
     >
-      <iframe src="https://gate.chiao.io"></iframe>
+      <iframe title="ChiaoFly" src={"https://play.chiao.io/?wallet="+address?.toLowerCase()}></iframe>
     </ChiaoGameWrapper>
   );
 };

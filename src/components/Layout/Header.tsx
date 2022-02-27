@@ -1,18 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { AppBar, Container } from "@mui/material";
+import { AppBar, Container, Tab, Tabs } from "@mui/material";
+import { Link } from "react-router-dom";
 
-import Logo from "../../assets/chiao64.png";
+// import Logo from "../../assets/chiao64.png";
 
 import { minimizeAddress } from "../../helper/utils";
 import useAuth from "../../hooks/useAuth";
 
 const Header = () => {
   const { address, loading, connect, disconnect } = useAuth();
+  const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
+  const [page, setPage] = useState(0);
 
   const open = Boolean(anchorEl);
 
@@ -28,6 +32,28 @@ const Header = () => {
     handleClose();
     disconnect();
   };
+
+  const handleChange = (event, newValue) => {
+    setPage(newValue);
+  };
+
+  useEffect(() => {
+    let currentTab: any = false;
+
+    switch (location.pathname) {
+      case "/":
+        currentTab = 0;
+        break;
+      case "/leaderboard":
+        currentTab = 1;
+        break;
+    }
+    setPage(currentTab);
+  }, [location.pathname, address]);
+
+  function LinkTab(props) {
+    return <Tab component={Link} style={{ padding: "29px 0px" }} {...props} />;
+  }
 
   return (
     <AppBar
@@ -50,6 +76,15 @@ const Header = () => {
           <Grid item display={{ lg: "flex" }}>
             {address ? (
               <Grid container alignItems="center">
+                <Tabs
+                  indicatorColor="secondary"
+                  value={page}
+                  onChange={handleChange}
+                  aria-label="headers"
+                >
+                  <LinkTab label="Home" to="/" />
+                  <LinkTab label="Leaderboard" to="/leaderboard" />
+                </Tabs>
                 <Button
                   variant="outlined"
                   color="secondary"

@@ -9,7 +9,8 @@ import ChiaoBanner from "../../components/ChiaoBanner";
 import BigOutlinedButton from "../../components/BigOutlinedButton";
 import HomeWrapper from "./Style";
 import { formatBalance } from "../../helper/utils";
-import Header from "../../components/Layout/Header";
+import ApiService from "../../helper/api";
+import SocialButtons from "../../components/SocialButtons";
 
 export default function Home() {
   const {
@@ -17,7 +18,6 @@ export default function Home() {
     chainId,
     loading,
     connect,
-    disconnect,
     switchNetwork,
     addToken,
   } = useAuth();
@@ -27,7 +27,6 @@ export default function Home() {
   } = useContracts();
   const { showSnackbar } = useSnackbar();
 
-  const [user, setUser] = useState({ address: "", chainId: 0 });
   const [balance, setBalance] = useState(0);
 
   const allowAmount = 100000000;
@@ -39,24 +38,31 @@ export default function Home() {
       return;
     }
     // Temp code
-    if (parseInt(chainId) !== 1) {
+    if (parseInt(chainId) !== 3) {
       setBalance(0);
       return;
     }
 
-    const balance = await tokenContract.methods.balanceOf(address).call();
-    const balanceCHIAO = parseInt(Web3.utils.fromWei(`${balance}`, "ether"));
-    setBalance(balanceCHIAO);
+    let balanceCHIAO;
+    try {
+      const balance = await tokenContract.methods.balanceOf(address).call();
+      balanceCHIAO = parseInt(Web3.utils.fromWei(`${balance}`, "ether"));
+      setBalance(balanceCHIAO);
+    } catch (err) {
+      console.error(err);
+      setBalance(0);
+    }
+    if (balanceCHIAO >= allowAmount) {
+      await ApiService.registerUser(address);
+    }
   };
 
   useEffect(() => {
     if (!address || !chainId) {
-      setUser({ address: "", chainId: 0 });
       return;
     }
     console.log(address, chainId, wrongNetwork);
     checkConnect();
-    setUser({ address, chainId: parseInt(chainId) });
     fetchInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address, chainId]);
@@ -88,6 +94,14 @@ export default function Home() {
 
   return (
     <HomeWrapper>
+      <SocialButtons
+          facebook="https://www.facebook.com/ChiaotzuInuToken"
+          twitter="https://twitter.com/chiaotoken"
+          discord="https://discord.io/CHIAO"
+          telegram="https://chiao.io/telegram"
+          reddit="https://www.reddit.com/r/chiaotoken/"
+          instagram="https://www.instagram.com/chiaotzuinu/"
+        />
       <Container maxWidth="lg">
         <Grid container direction="column" justifyContent="center">
           <Grid item pt={3}>
