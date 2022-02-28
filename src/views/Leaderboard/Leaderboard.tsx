@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Web3 from "web3";
 import {
   Container,
   Grid,
@@ -83,7 +82,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Leaderboard() {
   const { address } = useAuth();
-  const { showSnackbar } = useSnackbar();
 
   const [gameResults, setGameResults] = useState<IGameResult[]>([]);
   const [loading, setLoading] = useState(false);

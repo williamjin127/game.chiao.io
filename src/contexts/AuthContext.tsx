@@ -3,6 +3,7 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { isMobile } from 'react-device-detect';
+import { useHistory } from "react-router-dom";
 
 import { useSnackbar } from "./Snackbar";
 import { config } from "../config";
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }) => {
   const [chainId, setChainId] = useState<number | null>(null);
   const [web3, setWeb3] = useState<any>(null);
   const { showSnackbar } = useSnackbar();
+  const history = useHistory();
 
   const subscribeProvider = (provider) => {
     provider.on("disconnect", (error) => {
@@ -118,6 +120,7 @@ export const AuthProvider = ({ children }) => {
     web3Modal.clearCachedProvider();
     setChainId(null);
     setAddress(null);
+    history.push("/");
   };
 
   const switchNetwork = async (switchChainId) => {
@@ -236,9 +239,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    // if (!isMobile) {
-    //   connect();
-    // }
+    if (web3Modal.cachedProvider) {
+      connect();
+    }
     // eslint-disable-next-line
   }, []);
 

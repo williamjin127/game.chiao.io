@@ -29,7 +29,7 @@ export default function Home() {
 
   const [balance, setBalance] = useState(0);
 
-  const allowAmount = 100000000;
+  const allowAmount = 1000000000;
   const history = useHistory();
 
   const fetchInfo = async () => {
