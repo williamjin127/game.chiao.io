@@ -23,7 +23,7 @@ export default function Play() {
       return;
     }
     // Temp code
-    if (parseInt(chainId) !== 3) {
+    if (parseInt(chainId) !== 1 && parseInt(chainId) !== 3) {
       setBalance(0);
       return;
     }

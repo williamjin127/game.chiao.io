@@ -16,4 +16,7 @@ export const config = {
     BSC_TESTNET: "https://data-seed-prebsc-1-s1.binance.org:8545/",
     FTM_TESTNET: "https://rpc.testnet.fantom.network/",
   },
+  // BACKEND_URL: "http://localhost:8000/api/v1",
+  // BACKEND_URL: "http://54.241.78.18:8001/api/v1",
+  BACKEND_URL: "https://api.chiao.io/api/v1",
 };

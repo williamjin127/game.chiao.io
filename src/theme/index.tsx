@@ -48,18 +48,18 @@ const theme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          border: "1px solid #FEAC00",
+          border: "2px solid white",
           color: "white",
         },
       },
     },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          border: "1px solid #FEAC00",
-        },
-      },
-    },
+    // MuiTableRow: {
+    //   styleOverrides: {
+    //     root: {
+    //       border: "1px solid #FEAC00",
+    //     },
+    //   },
+    // },
     MuiTableCell: {
       styleOverrides: {
         root: {

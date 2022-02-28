@@ -13,10 +13,10 @@ const ApiInstance = axios.create({
 const ApiService = {
   registerUser(address) {
     return ApiInstance.post(`/game/`, {
-      WalletAddress: address,
+      WalletAddress: address.toLowerCase(),
       UserName: "test",
       EMail: "test@test.com",
-      PlayerScore: "0",
+      PlayerScore: 0,
       DragonBalls: "0",
       FireballsHit: "0",
       ShieldsCollected: "0",
@@ -25,12 +25,24 @@ const ApiService = {
       TapScreen: "0",
       GameplayTime: "0:0",
       GameplaySeconds: "0",
+      ActiveTimes: "0",
     })
       .then((res) => res)
       .catch((err) => Promise.reject(err));
   },
-  getGameResults() {
-    return ApiInstance.get("/game/")
+  getGameResults(page) {
+    return ApiInstance.get("/game/", {
+      params: { page },
+    })
+      .then((res) => res.data)
+      .catch((err) => Promise.reject(err));
+  },
+  findByAddress(address) {
+    return ApiInstance.get("/game/", {
+      params: {
+        address,
+      },
+    })
       .then((res) => res.data)
       .catch((err) => Promise.reject(err));
   },

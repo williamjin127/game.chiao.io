@@ -70,12 +70,7 @@ const Header = () => {
           <Grid item>
             <Grid container alignItems="center">
               {/* <img src={Logo} width={50} alt="Chiao" /> */}
-            </Grid>
-          </Grid>
-
-          <Grid item display={{ lg: "flex" }}>
-            {address ? (
-              <Grid container alignItems="center">
+              {address && (
                 <Tabs
                   indicatorColor="secondary"
                   value={page}
@@ -85,6 +80,13 @@ const Header = () => {
                   <LinkTab label="Home" to="/" />
                   <LinkTab label="Leaderboard" to="/leaderboard" />
                 </Tabs>
+              )}
+            </Grid>
+          </Grid>
+
+          <Grid item display={{ lg: "flex" }}>
+            {address ? (
+              <Grid container alignItems="center">
                 <Button
                   variant="outlined"
                   color="secondary"
