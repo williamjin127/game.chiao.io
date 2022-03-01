@@ -52,7 +52,13 @@ const Header = () => {
   }, [location.pathname, address]);
 
   function LinkTab(props) {
-    return <Tab component={Link} style={{ padding: "29px 0px" }} {...props} />;
+    return (
+      <Tab
+        component={Link}
+        style={{ padding: "20px 0px", fontSize: "16px" }}
+        {...props}
+      />
+    );
   }
 
   return (

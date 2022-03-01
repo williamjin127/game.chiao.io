@@ -38,9 +38,9 @@ const theme = createTheme({
     MuiTab: {
       styleOverrides: {
         root: {
-          color: "white",
+          color: "#FBF3F3",
           "&.Mui-selected": {
-            color: "white",
+            color: "#FBF3F3",
           },
         },
       },

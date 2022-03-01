@@ -10,6 +10,7 @@ import {
   TableHead,
   TableRow,
   CircularProgress,
+  Box,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -248,8 +249,12 @@ export default function Leaderboard() {
                       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                       ref={infiniteRef}
                     >
-                      <TableCell align="center" colSpan={9}>
-                        {loading && <CircularProgress />}
+                      <TableCell colSpan={9}>
+                        <Box sx={{ width: "100vw" }}>
+                        <Grid container justifyContent="center" alignItems="center">
+                          {loading && <CircularProgress />}
+                        </Grid>
+                        </Box>
                       </TableCell>
                     </TableRow>
                   )}

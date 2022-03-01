@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Web3 from "web3";
-import { Container, Grid, Link, Typography } from "@mui/material";
+import { ClickAwayListener, Container, Grid, Link, Tooltip, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { useContracts } from "../../contexts/Web3Context";
 import { useSnackbar } from "../../contexts/Snackbar";
@@ -13,14 +13,8 @@ import ApiService from "../../helper/api";
 import SocialButtons from "../../components/SocialButtons";
 
 export default function Home() {
-  const {
-    address,
-    chainId,
-    loading,
-    connect,
-    switchNetwork,
-    addToken,
-  } = useAuth();
+  const { address, chainId, loading, connect, switchNetwork, addToken } =
+    useAuth();
   const {
     contracts: { tokenContract },
     wrongNetwork,
@@ -75,6 +69,26 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenContract]);
 
+  // Coming soon
+  const [binanceOpen, setBinanceOpen] = useState(false);
+  const [fantomOpen, setFantomOpen] = useState(false);
+
+  const handleBinanceTooltipClose = () => {
+    setBinanceOpen(false);
+  };
+
+  const handleBinanceTooltipOpen = () => {
+    setBinanceOpen(true);
+  };
+
+  const handleFantomTooltipClose = () => {
+    setFantomOpen(false);
+  };
+
+  const handleFantomTooltipOpen = () => {
+    setFantomOpen(true);
+  };
+
   const checkConnect = () => {
     if (!address) {
       showSnackbar({
@@ -95,13 +109,13 @@ export default function Home() {
   return (
     <HomeWrapper>
       <SocialButtons
-          facebook="https://www.facebook.com/ChiaotzuInuToken"
-          twitter="https://twitter.com/chiaotoken"
-          discord="https://discord.io/CHIAO"
-          telegram="https://chiao.io/telegram"
-          reddit="https://www.reddit.com/r/chiaotoken/"
-          instagram="https://www.instagram.com/chiaotzuinu/"
-        />
+        facebook="https://www.facebook.com/ChiaotzuInuToken"
+        twitter="https://twitter.com/chiaotoken"
+        discord="https://discord.io/CHIAO"
+        telegram="https://chiao.io/telegram"
+        reddit="https://www.reddit.com/r/chiaotoken/"
+        instagram="https://www.instagram.com/chiaotzuinu/"
+      />
       <Container maxWidth="lg">
         <Grid container direction="column" justifyContent="center">
           <Grid item pt={3}>
@@ -180,12 +194,27 @@ export default function Home() {
                           xs={12}
                           sx={{ textAlign: "center" }}
                         >
-                          <BigOutlinedButton
-                            color="#FEAC00"
-                            onClick={() => switchNetwork("0x61")}
+                          <ClickAwayListener onClickAway={handleBinanceTooltipClose}>
+                          <Tooltip
+                            PopperProps={{
+                              disablePortal: true,
+                            }}
+                            onClose={handleBinanceTooltipClose}
+                            open={binanceOpen}
+                            disableFocusListener
+                            disableHoverListener
+                            disableTouchListener
+                            title="Coming Soon"
                           >
-                            Binance Smart Chain
-                          </BigOutlinedButton>
+                            <BigOutlinedButton
+                              color="#FEAC00"
+                              // onClick={() => switchNetwork("0x61")}
+                              onClick={handleBinanceTooltipOpen}
+                            >
+                              Binance Smart Chain
+                            </BigOutlinedButton>
+                          </Tooltip>
+                          </ClickAwayListener>
                         </Grid>
                         <Grid
                           item
@@ -196,12 +225,27 @@ export default function Home() {
                           xs={12}
                           sx={{ textAlign: "center" }}
                         >
-                          <BigOutlinedButton
-                            color="#FEAC00"
-                            onClick={() => switchNetwork("0xfa2")}
+                          <ClickAwayListener onClickAway={handleFantomTooltipClose}>
+                          <Tooltip
+                            PopperProps={{
+                              disablePortal: true,
+                            }}
+                            onClose={handleFantomTooltipClose}
+                            open={fantomOpen}
+                            disableFocusListener
+                            disableHoverListener
+                            disableTouchListener
+                            title="Coming Soon"
                           >
-                            Fantom Opera
-                          </BigOutlinedButton>
+                            <BigOutlinedButton
+                              color="#FEAC00"
+                              // onClick={() => switchNetwork("0xfa2")}
+                              onClick={handleFantomTooltipOpen}
+                            >
+                              Fantom Opera
+                            </BigOutlinedButton>
+                          </Tooltip>
+                          </ClickAwayListener>
                         </Grid>
                       </Grid>
                     </Grid>
@@ -262,7 +306,7 @@ export default function Home() {
                     <Grid container direction="column">
                       <Grid item>
                         <Typography fontSize={28} color="#fff" align="center">
-                          To play Chiao Fly, you must hold at least 100M $CHIAO
+                          To play Chiao Fly, you must hold at least 1B $CHIAO
                           Tokens.
                           <br />
                           You can win $CHIAO token for FREE in{" "}

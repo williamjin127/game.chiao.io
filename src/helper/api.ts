@@ -14,8 +14,8 @@ const ApiService = {
   registerUser(address) {
     return ApiInstance.post(`/game/`, {
       WalletAddress: address.toLowerCase(),
-      UserName: "test",
-      EMail: "test@test.com",
+      UserName: address.toLowerCase(),
+      EMail: address.toLowerCase(),
       PlayerScore: 0,
       DragonBalls: "0",
       FireballsHit: "0",
