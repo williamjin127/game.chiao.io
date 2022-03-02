@@ -30,17 +30,18 @@ const ApiService = {
       .then((res) => res)
       .catch((err) => Promise.reject(err));
   },
-  getGameResults(page) {
+  getGameResults(page, query) {
     return ApiInstance.get("/game/", {
-      params: { page },
+      params: { page, ...query },
     })
       .then((res) => res.data)
       .catch((err) => Promise.reject(err));
   },
-  findByAddress(address) {
+  findByAddress(address, query) {
     return ApiInstance.get("/game/", {
       params: {
         address,
+        ...query
       },
     })
       .then((res) => res.data)

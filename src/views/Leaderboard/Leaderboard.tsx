@@ -9,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
   CircularProgress,
   Box,
 } from "@mui/material";
@@ -20,9 +21,10 @@ import useInfiniteScroll from "react-infinite-scroll-hook";
 import useAuth from "../../hooks/useAuth";
 import ApiService from "../../helper/api";
 import { minimizeAddress, sameAddress } from "../../helper/utils";
-import { useSnackbar } from "../../contexts/Snackbar";
+import { visuallyHidden } from '@mui/utils';
 
 interface IGameResult {
+  ranking: number,
   WalletAddress: string;
   UserName: string;
   EMail: string;
@@ -81,12 +83,80 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const StyledTableSortLabel = styled(TableSortLabel)(({ theme }) => ({
+  "&:hover, &.Mui-active": {
+    color: "#ffffff",
+    ".MuiTableSortLabel-icon": {
+      color: "#ffffff",
+    }
+  }
+}));
+
+
+declare type AlignType = 'left' | 'center' | 'right';
+declare type DirectionType = 'desc' | 'asc';
+
+const HeadCells = [
+  {
+    key: "WalletAddress",
+    label: "Address",
+    align: "center" as AlignType
+  },
+  {
+    key: "PlayerScore",
+    label: "PlayerScore",
+    align: "center" as AlignType
+  },
+  {
+    key: "DragonBalls",
+    label: "DragonBalls",
+    align: "center" as AlignType
+  },
+  {
+    key: "FireballsHit",
+    label: "FireballsHit",
+    align: "center" as AlignType
+  },
+  {
+    key: "ShieldsCollected",
+    label: "ShieldsCollected",
+    align: "center" as AlignType
+  },
+  {
+    key: "ShieldsUsed",
+    label: "ShieldsUsed",
+    align: "center" as AlignType
+  },
+  {
+    key: "LostHearts",
+    label: "LostHearts",
+    align: "center" as AlignType
+  },
+  {
+    key: "TapScreen",
+    label: "TapScreen",
+    align: "center" as AlignType
+  },
+  {
+    key: "GameplayTime",
+    label: "GameplayTime",
+    align: "center" as AlignType
+  },
+  {
+    key: "GameplaySeconds",
+    label: "GameplaySeconds",
+    align: "center" as AlignType
+  },
+];
+
 export default function Leaderboard() {
   const { address } = useAuth();
 
   const [gameResults, setGameResults] = useState<IGameResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
+  const [sortBy, setSortBy] = useState("PlayerScore");
+  const [sortDirection, setSortDirection] = useState<DirectionType>("desc");
   const [hasNextPage, setHasNextPage] = useState(true);
   const [term, setTerm] = useState("");
 
@@ -98,7 +168,11 @@ export default function Leaderboard() {
     setLoading(true);
     try {
       const { results: newResults, next } = await ApiService.getGameResults(
-        page
+        page,
+        {
+          sort: sortBy,
+          sortdirection: sortDirection
+        }
       );
       if (refresh) {
         setGameResults(newResults);
@@ -117,7 +191,9 @@ export default function Leaderboard() {
   };
 
   const updateTableByAddress = async (address) => {
-    const { results } = await ApiService.findByAddress(address);
+    const { results } = await ApiService.findByAddress(address, {
+      sort: sortBy, sortdirection: sortDirection
+    });
     setGameResults(results);
     setHasNextPage(false);
   };
@@ -134,6 +210,12 @@ export default function Leaderboard() {
     // }
   };
 
+  const handleResultSort = (field) => (event) => {
+    const isAsc = sortBy === field && sortDirection === 'asc';
+    setSortDirection(isAsc ? 'desc' : 'asc');
+    setSortBy(field);
+  };
+
   const loadMoreNft = () => {
     const nextPage = page + 1;
     fetchGameResults(nextPage, false);
@@ -148,7 +230,7 @@ export default function Leaderboard() {
   useEffect(() => {
     fetchGameResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  }, [address, sortBy, sortDirection]);
 
   return (
     <Container>
@@ -178,35 +260,28 @@ export default function Leaderboard() {
                 <TableHead>
                   <TableRow>
                     <TableCell align="center">
-                      <Typography fontSize={18}>Address</Typography>
+                      <Typography fontSize={18}>Rank</Typography>
                     </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>PlayerScore</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>DragonBalls</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>FireballsHit</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>ShieldsCollected</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>ShieldsUsed</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>LostHearts</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>TapScreen</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>GameplayTime</Typography>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Typography fontSize={18}>GameplaySeconds</Typography>
-                    </TableCell>
+                    {HeadCells.map(headCell => (
+                      <TableCell
+                        key={headCell.key}
+                        align={headCell.align}
+                        sortDirection={sortBy === headCell.key ? sortDirection : false}
+                      >
+                        <StyledTableSortLabel
+                          active={sortBy === headCell.key}
+                          direction={sortBy === headCell.key ? sortDirection : "desc"}
+                          onClick={handleResultSort(headCell.key)}
+                        >
+                          <Typography fontSize={18}>{headCell.label}</Typography>
+                          {sortBy === headCell.key ? (
+                            <Box component="span" sx={visuallyHidden}>
+                              {sortDirection === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                            </Box>
+                          ) : null}
+                        </StyledTableSortLabel>
+                      </TableCell>
+                    ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -225,6 +300,9 @@ export default function Leaderboard() {
                           : {}
                       }
                     >
+                      <TableCell component="th" scope="row" align="center">
+                        {row.ranking}
+                      </TableCell>
                       <TableCell component="th" scope="row" align="center">
                         {minimizeAddress(row.WalletAddress, 6, -4)}
                       </TableCell>
