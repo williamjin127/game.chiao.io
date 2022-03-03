@@ -13,7 +13,7 @@ const AppContent = styled(Box)({
   minHeight: "calc(100vh - 132px)",
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
+  justifyContent: "flex-start",
   alignItems: "center",
   backgroundImage:
     "radial-gradient(at center center, rgb(57, 24, 68) 0%, rgb(32, 14, 38) 100%)",

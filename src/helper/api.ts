@@ -30,14 +30,14 @@ const ApiService = {
       .then((res) => res)
       .catch((err) => Promise.reject(err));
   },
-  getGameResults(page, query) {
+  getATHResults(page, query) {
     return ApiInstance.get("/game/", {
       params: { page, ...query },
     })
       .then((res) => res.data)
       .catch((err) => Promise.reject(err));
   },
-  findByAddress(address, query) {
+  findATHByAddress(address, query) {
     return ApiInstance.get("/game/", {
       params: {
         address,
@@ -46,6 +46,23 @@ const ApiService = {
     })
       .then((res) => res.data)
       .catch((err) => Promise.reject(err));
+  },
+  getCompetitionResults(page, query) {
+    return ApiInstance.get("/competition/", {
+      params: { page, ...query },
+    })
+        .then((res) => res.data)
+        .catch((err) => Promise.reject(err));
+  },
+  findCompetitionByAddress(address, query) {
+    return ApiInstance.get("/competition/", {
+      params: {
+        address,
+        ...query
+      },
+    })
+        .then((res) => res.data)
+        .catch((err) => Promise.reject(err));
   },
 };
 
