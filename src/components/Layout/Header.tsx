@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import {useHistory, useLocation} from "react-router";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import Menu from "@mui/material/Menu";
@@ -14,6 +14,7 @@ import useAuth from "../../hooks/useAuth";
 
 const Header = () => {
   const { address, loading, connect, disconnect } = useAuth();
+  const history = useHistory();
   const location = useLocation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [page, setPage] = useState(0);
@@ -102,6 +103,13 @@ const Header = () => {
                   {minimizeAddress(address, 4, -4)}
                 </Button>
                 <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+                  <MenuItem
+                      onClick={() => {
+                        history.push("/profile");
+                      }}
+                  >
+                    Profile
+                  </MenuItem>
                   <MenuItem
                     onClick={() => {
                       handleDisconnect();

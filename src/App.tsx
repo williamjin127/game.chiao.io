@@ -23,6 +23,7 @@ const AppContent = styled(Box)({
 const Home = lazy(() => import("./views/Home"));
 const Play = lazy(() => import("./views/Play"));
 const Leaderboard = lazy(() => import("./views/Leaderboard"));
+const Profile = lazy(() => import("./views/Profile"));
 
 function App() {
   return (
@@ -39,6 +40,9 @@ function App() {
             </Route>
             <Route path="/leaderboard" exact>
               <Leaderboard />
+            </Route>
+            <Route path="/profile" exact>
+              <Profile />
             </Route>
           </Suspense>
         </Switch>
