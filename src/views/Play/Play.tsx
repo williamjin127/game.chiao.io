@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import Web3 from "web3";
 import { Container, Grid, Typography } from "@mui/material";
 import { useContracts } from "../../contexts/Web3Context";
 import useAuth from "../../hooks/useAuth";
@@ -7,36 +5,15 @@ import { formatBalance } from "../../helper/utils";
 import GameStage from "../../components/GameStage";
 import SocialButtons from "../../components/SocialButtons";
 import PlayWrapper from "./Style";
-
-const AllowAmount = 100000000;
+import { config } from "../../config";
 
 export default function Play() {
-  const { address, chainId } = useAuth();
-  const {
-    contracts: { tokenContract },
-  } = useContracts();
-  const [balance, setBalance] = useState(0);
+  const { address } = useAuth();
+  const { balance } = useContracts();
 
-  const fetchInfo = async () => {
-    if (!tokenContract || !address) {
-      setBalance(0);
-      return;
-    }
-    // Temp code
-    if (parseInt(chainId) !== 1 && parseInt(chainId) !== 3) {
-      setBalance(0);
-      return;
-    }
-
-    const balance = await tokenContract.methods.balanceOf(address).call();
-    const balanceCHIAO = parseInt(Web3.utils.fromWei(`${balance}`, "ether"));
-    setBalance(balanceCHIAO);
+  const hasPermission = () => {
+    return balance >= config.ALLOW_AMOUNT;
   };
-
-  useEffect(() => {
-    fetchInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, chainId, tokenContract]);
 
   return (
     <PlayWrapper>
@@ -56,7 +33,7 @@ export default function Play() {
           justifyContent="center"
         >
           <Grid item pt={3}>
-            {balance >= AllowAmount ? (
+            {hasPermission() ? (
               <GameStage address={address} />
             ) : address ? (
               <Typography fontSize={28} mt={2} color="#fff">

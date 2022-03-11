@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import Web3 from "web3";
-import { ClickAwayListener, Container, Grid, Link, Tooltip, Typography } from "@mui/material";
+import {
+  ClickAwayListener,
+  Container,
+  Grid,
+  Link,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useHistory } from "react-router-dom";
 import { useContracts } from "../../contexts/Web3Context";
-import { useSnackbar } from "../../contexts/Snackbar";
 import useAuth from "../../hooks/useAuth";
 import ChiaoBanner from "../../components/ChiaoBanner";
 import BigOutlinedButton from "../../components/BigOutlinedButton";
@@ -11,42 +16,20 @@ import HomeWrapper from "./Style";
 import { formatBalance } from "../../helper/utils";
 import ApiService from "../../helper/api";
 import SocialButtons from "../../components/SocialButtons";
+import { config } from "../../config";
 
 export default function Home() {
   const { address, chainId, loading, connect, switchNetwork, addToken } =
     useAuth();
-  const {
-    contracts: { tokenContract },
-    wrongNetwork,
-  } = useContracts();
-  const { showSnackbar } = useSnackbar();
-
-  const [balance, setBalance] = useState(0);
-
-  const allowAmount = 1000000000;
+  const { balance } = useContracts();
   const history = useHistory();
 
-  const fetchInfo = async () => {
-    if (!tokenContract || !address) {
-      setBalance(0);
-      return;
-    }
-    // Temp code
-    if (parseInt(chainId) !== 1 && parseInt(chainId) !== 3) {
-      setBalance(0);
-      return;
-    }
+  const hasPermission = () => {
+    return balance >= config.ALLOW_AMOUNT;
+  };
 
-    let balanceCHIAO;
-    try {
-      const balance = await tokenContract.methods.balanceOf(address).call();
-      balanceCHIAO = parseInt(Web3.utils.fromWei(`${balance}`, "ether"));
-      setBalance(balanceCHIAO);
-    } catch (err) {
-      console.error(err);
-      setBalance(0);
-    }
-    if (balanceCHIAO >= allowAmount) {
+  const fetchInfo = async () => {
+    if (hasPermission()) {
       await ApiService.registerUser(address);
     }
   };
@@ -55,19 +38,9 @@ export default function Home() {
     if (!address || !chainId) {
       return;
     }
-    console.log(address, chainId, wrongNetwork);
-    checkConnect();
     fetchInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, chainId]);
-
-  useEffect(() => {
-    if (!tokenContract) {
-      return;
-    }
-    fetchInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenContract]);
+  }, [address, chainId, balance]);
 
   // Coming soon
   const [binanceOpen, setBinanceOpen] = useState(false);
@@ -87,17 +60,6 @@ export default function Home() {
 
   const handleFantomTooltipOpen = () => {
     setFantomOpen(true);
-  };
-
-  const checkConnect = () => {
-    if (!address) {
-      showSnackbar({
-        severity: "error",
-        message: "Please connect your wallet.",
-      });
-      return false;
-    }
-    return true;
   };
 
   const goToPlay = () => {
@@ -194,26 +156,28 @@ export default function Home() {
                           xs={12}
                           sx={{ textAlign: "center" }}
                         >
-                          <ClickAwayListener onClickAway={handleBinanceTooltipClose}>
-                          <Tooltip
-                            PopperProps={{
-                              disablePortal: true,
-                            }}
-                            onClose={handleBinanceTooltipClose}
-                            open={binanceOpen}
-                            disableFocusListener
-                            disableHoverListener
-                            disableTouchListener
-                            title="Coming Soon"
+                          <ClickAwayListener
+                            onClickAway={handleBinanceTooltipClose}
                           >
-                            <BigOutlinedButton
-                              color="#FEAC00"
-                              // onClick={() => switchNetwork("0x61")}
-                              onClick={handleBinanceTooltipOpen}
+                            <Tooltip
+                              PopperProps={{
+                                disablePortal: true,
+                              }}
+                              onClose={handleBinanceTooltipClose}
+                              open={binanceOpen}
+                              disableFocusListener
+                              disableHoverListener
+                              disableTouchListener
+                              title="Coming Soon"
                             >
-                              Binance Smart Chain
-                            </BigOutlinedButton>
-                          </Tooltip>
+                              <BigOutlinedButton
+                                color="#FEAC00"
+                                // onClick={() => switchNetwork("0x61")}
+                                onClick={handleBinanceTooltipOpen}
+                              >
+                                Binance Smart Chain
+                              </BigOutlinedButton>
+                            </Tooltip>
                           </ClickAwayListener>
                         </Grid>
                         <Grid
@@ -225,26 +189,28 @@ export default function Home() {
                           xs={12}
                           sx={{ textAlign: "center" }}
                         >
-                          <ClickAwayListener onClickAway={handleFantomTooltipClose}>
-                          <Tooltip
-                            PopperProps={{
-                              disablePortal: true,
-                            }}
-                            onClose={handleFantomTooltipClose}
-                            open={fantomOpen}
-                            disableFocusListener
-                            disableHoverListener
-                            disableTouchListener
-                            title="Coming Soon"
+                          <ClickAwayListener
+                            onClickAway={handleFantomTooltipClose}
                           >
-                            <BigOutlinedButton
-                              color="#FEAC00"
-                              // onClick={() => switchNetwork("0xfa2")}
-                              onClick={handleFantomTooltipOpen}
+                            <Tooltip
+                              PopperProps={{
+                                disablePortal: true,
+                              }}
+                              onClose={handleFantomTooltipClose}
+                              open={fantomOpen}
+                              disableFocusListener
+                              disableHoverListener
+                              disableTouchListener
+                              title="Coming Soon"
                             >
-                              Fantom Opera
-                            </BigOutlinedButton>
-                          </Tooltip>
+                              <BigOutlinedButton
+                                color="#FEAC00"
+                                // onClick={() => switchNetwork("0xfa2")}
+                                onClick={handleFantomTooltipOpen}
+                              >
+                                Fantom Opera
+                              </BigOutlinedButton>
+                            </Tooltip>
                           </ClickAwayListener>
                         </Grid>
                       </Grid>
@@ -268,9 +234,7 @@ export default function Home() {
                         Your $CHIAO balance:{" "}
                         <span
                           className={`chiao-value ${
-                            balance >= allowAmount
-                              ? "greater-than"
-                              : "less-than"
+                            hasPermission() ? "greater-than" : "less-than"
                           }`}
                         >
                           {formatBalance(balance)}
@@ -279,7 +243,7 @@ export default function Home() {
                     </Grid>
                   </Grid>
                 </Grid>
-                {balance >= allowAmount ? (
+                {hasPermission() ? (
                   <Grid item pt={3}>
                     <Grid container direction="column" alignItems="center">
                       <Grid item>
@@ -329,7 +293,7 @@ export default function Home() {
                           }}
                         >
                           <Link
-                            href="https://app.uniswap.org/#/swap?theme=dark&use=v2&slippage=35.00&exactAmount=500000000000&exactField=output&inputCurrency=ETH&outputCurrency=0xa0ccb6BEb58C9ac68Ba2f24F4CE340992e828b29&chain=mainnet"
+                            href="https://app.uniswap.org/#/swap?theme=dark&use=v2&slippage=35.00&exactAmount=499000000000&exactField=output&inputCurrency=ETH&outputCurrency=0xa0ccb6BEb58C9ac68Ba2f24F4CE340992e828b29&chain=mainnet"
                             underline="none"
                           >
                             Buy $CHIAO

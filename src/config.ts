@@ -17,6 +17,6 @@ export const config = {
     FTM_TESTNET: "https://rpc.testnet.fantom.network/",
   },
   // BACKEND_URL: "http://localhost:8000/api/v1",
-  // BACKEND_URL: "http://54.241.78.18:8001/api/v1",
   BACKEND_URL: "https://api.chiao.io/api/v1",
+  ALLOW_AMOUNT: 1000000000,
 };

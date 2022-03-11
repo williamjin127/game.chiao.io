@@ -91,6 +91,9 @@ const StyledTableRow = styled(TableRow)(props => ({
     "& .MuiTableCell-root": {
         color: props.color || "white",
         fontSize: 18
+    },
+    "& .MuiTypography-root": {
+        fontSize: 18
     }
 }));
 
@@ -342,7 +345,7 @@ export default function Leaderboard() {
         }
     };
 
-    const rowColor = (row) => {
+    const rowColor = (row, ranking) => {
         if (sameAddress(term, row.WalletAddress)) {
             return "#FEAC00"
         }
@@ -352,7 +355,7 @@ export default function Leaderboard() {
         }
 
         let color =  "white";
-        switch (row.ranking) {
+        switch (ranking) {
             case 1:
                 color = "#AF9500";
                 break;
@@ -363,7 +366,7 @@ export default function Leaderboard() {
                 color =  "#6A3805";
                 break;
             default:
-                if (row.ranking <= 7) {
+                if (ranking <= 7) {
                     color = "lightgreen";
                 }
                 break;
@@ -378,10 +381,12 @@ export default function Leaderboard() {
 
     useEffect(() => {
         fetchGameResults((value) => setTabLoading(value));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [address, tab]);
 
     useEffect(() => {
         fetchGameResults((value) => setSortLoading(value));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [address, sortBy, sortDirection]);
 
     return (
@@ -467,10 +472,10 @@ export default function Leaderboard() {
                                                         <TableCell align="center" colSpan={9}>No Data</TableCell>
                                                     </TableRow>
                                                 )}
-                                                {gameResults.map((row) => (
+                                                {gameResults.map((row, index) => (
                                                     <StyledTableRow
                                                         key={row.WalletAddress}
-                                                        color={rowColor(row)}
+                                                        color={rowColor(row, index+1)}
                                                         sx={
                                                             sameAddress(term, row.WalletAddress)
                                                                 ? { border: "2px solid #FEAC00" }
@@ -478,7 +483,7 @@ export default function Leaderboard() {
                                                         }
                                                     >
                                                         <TableCell component="th" scope="row" align="center">
-                                                            {renderRankingMedal(row.ranking)}
+                                                            {renderRankingMedal(index+1)}
                                                         </TableCell>
                                                         <TableCell component="th" scope="row" align="center">
                                                             {minimizeAddress(row.WalletAddress, 6, -4)}
