@@ -105,6 +105,7 @@ const Header = () => {
                 <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                   <MenuItem
                       onClick={() => {
+                        handleClose();
                         history.push("/account");
                       }}
                   >
