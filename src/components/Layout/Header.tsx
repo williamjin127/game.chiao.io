@@ -105,10 +105,10 @@ const Header = () => {
                 <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
                   <MenuItem
                       onClick={() => {
-                        history.push("/profile");
+                        history.push("/account");
                       }}
                   >
-                    Profile
+                    Account
                   </MenuItem>
                   <MenuItem
                     onClick={() => {

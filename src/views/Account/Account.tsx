@@ -44,7 +44,7 @@ const StyledTextValidator = styled(TextValidator)(({ theme }) => ({
     }
 }));
 
-export default function Profile() {
+export default function Account() {
     const { address, chainId } = useAuth();
     const {
         contracts: { tokenContract },

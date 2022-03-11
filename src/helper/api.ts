@@ -10,6 +10,14 @@ const ApiInstance = axios.create({
   baseURL: config.BACKEND_URL,
 });
 
+const getRanking = (data) => {
+  data.results = data.results.map((row, index) => {
+    row.ranking = (data.page - 1) * data.page_size + index + 1;
+    return row;
+  });
+  return data;
+}
+
 const ApiService = {
   registerUser(address) {
     return ApiInstance.post(`/game/`, {
@@ -17,14 +25,14 @@ const ApiService = {
       UserName: address.toLowerCase(),
       EMail: address.toLowerCase(),
       PlayerScore: 0,
-      DragonBalls: "0",
-      FireballsHit: "0",
-      ShieldsCollected: "0",
-      ShieldsUsed: "0",
-      LostHearts: "0",
-      TapScreen: "0",
+      DragonBalls: 0,
+      FireballsHit: 0,
+      ShieldsCollected: 0,
+      ShieldsUsed: 0,
+      LostHearts: 0,
+      TapScreen: 0,
       GameplayTime: "0:0",
-      GameplaySeconds: "0",
+      GameplaySeconds: 0,
       ActiveTimes: "0",
     })
       .then((res) => res)
@@ -34,35 +42,35 @@ const ApiService = {
     return ApiInstance.get("/game/", {
       params: { page, ...query },
     })
-      .then((res) => res.data)
+      .then((res) => getRanking(res.data))
       .catch((err) => Promise.reject(err));
   },
   findATHByAddress(address, query) {
     return ApiInstance.get("/game/", {
       params: {
         address,
-        ...query
+        ...query,
       },
     })
-      .then((res) => res.data)
+      .then((res) => getRanking(res.data))
       .catch((err) => Promise.reject(err));
   },
   getCompetitionResults(page, query) {
     return ApiInstance.get("/competition/", {
       params: { page, ...query },
     })
-        .then((res) => res.data)
-        .catch((err) => Promise.reject(err));
+      .then((res) => getRanking(res.data))
+      .catch((err) => Promise.reject(err));
   },
   findCompetitionByAddress(address, query) {
     return ApiInstance.get("/competition/", {
       params: {
         address,
-        ...query
+        ...query,
       },
     })
-        .then((res) => res.data)
-        .catch((err) => Promise.reject(err));
+      .then((res) => getRanking(res.data))
+      .catch((err) => Promise.reject(err));
   },
 };
 

@@ -71,7 +71,10 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: "inherit",
+    color: "#FEAC00",
+    "&.MuiInputBase-root": {
+        width: "100%"
+    },
     "& .MuiInputBase-input": {
         padding: theme.spacing(1, 1, 1, 0),
         // vertical padding + font size from searchIcon
@@ -79,9 +82,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
         transition: theme.transitions.create("width"),
         width: "100%",
         [theme.breakpoints.up("sm")]: {
-            width: "20ch",
+            width: "40ch",
             "&:focus": {
-                width: "30ch",
+                width: "50ch",
             },
         },
     },
@@ -113,7 +116,7 @@ declare type DirectionType = 'desc' | 'asc';
 const HeadCells = [
     {
         key: "WalletAddress",
-        label: "Address",
+        label: "Player",
         align: "center" as AlignType
     },
     {
@@ -244,7 +247,11 @@ export default function Leaderboard() {
             sort: sortBy, sortdirection: sortDirection
         });
         setGameResults(results);
-        setHasNextPage(false);
+        if (address) {
+            setHasNextPage(false);
+        } else {
+            setHasNextPage(true);
+        }
     };
 
     const fetchCompetitionResults = async (page = 1, refresh = true) => {
@@ -282,7 +289,11 @@ export default function Leaderboard() {
             sort: sortBy, sortdirection: sortDirection
         });
         setGameResults(results);
-        setHasNextPage(false);
+        if (address) {
+            setHasNextPage(false);
+        } else {
+            setHasNextPage(true);
+        }
     };
 
     const handleSearchKeyDown = async (event: React.KeyboardEvent) => {
@@ -345,7 +356,7 @@ export default function Leaderboard() {
         }
     };
 
-    const rowColor = (row, ranking) => {
+    const rowColor = (row) => {
         if (sameAddress(term, row.WalletAddress)) {
             return "#FEAC00"
         }
@@ -355,7 +366,7 @@ export default function Leaderboard() {
         }
 
         let color =  "white";
-        switch (ranking) {
+        switch (row.ranking) {
             case 1:
                 color = "#AF9500";
                 break;
@@ -366,7 +377,7 @@ export default function Leaderboard() {
                 color =  "#6A3805";
                 break;
             default:
-                if (ranking <= 7) {
+                if (row.ranking <= 7) {
                     color = "lightgreen";
                 }
                 break;
@@ -405,7 +416,7 @@ export default function Leaderboard() {
                     </Grid>
                     <Grid item sx={{ width: "100%" }}>
                         <Grid container direction="column">
-                            <Grid item display={{ lg: "flex" }} mb={2}>
+                            <Grid item display={{ sm: "flex" }} mb={2}>
                                 <Search style={{ borderRadius: 24 }}>
                                     <SearchIconWrapper>
                                         <SearchIcon />
@@ -472,10 +483,10 @@ export default function Leaderboard() {
                                                         <TableCell align="center" colSpan={9}>No Data</TableCell>
                                                     </TableRow>
                                                 )}
-                                                {gameResults.map((row, index) => (
+                                                {gameResults.map((row) => (
                                                     <StyledTableRow
                                                         key={row.WalletAddress}
-                                                        color={rowColor(row, index+1)}
+                                                        color={rowColor(row)}
                                                         sx={
                                                             sameAddress(term, row.WalletAddress)
                                                                 ? { border: "2px solid #FEAC00" }
@@ -483,7 +494,7 @@ export default function Leaderboard() {
                                                         }
                                                     >
                                                         <TableCell component="th" scope="row" align="center">
-                                                            {renderRankingMedal(index+1)}
+                                                            {renderRankingMedal(row.ranking)}
                                                         </TableCell>
                                                         <TableCell component="th" scope="row" align="center">
                                                             {minimizeAddress(row.WalletAddress, 6, -4)}
