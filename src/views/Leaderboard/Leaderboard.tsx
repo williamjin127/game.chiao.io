@@ -15,6 +15,8 @@ import {
   Box,
   Tabs,
   Tab,
+  Avatar,
+  CardHeader,
 } from "@mui/material";
 import { styled, alpha } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
@@ -43,6 +45,7 @@ interface IGameResult {
   GameplaySeconds: string;
   ActiveTimes: string;
   LatestDate: string;
+  avatar: string;
 }
 
 const Search = styled("div")(({ theme }) => ({
@@ -114,11 +117,6 @@ declare type DirectionType = "desc" | "asc";
 
 const HeadCells = [
   {
-    key: "WalletAddress",
-    label: "Player",
-    align: "center" as AlignType,
-  },
-  {
     key: "PlayerScore",
     label: "PlayerScore",
     align: "center" as AlignType,
@@ -164,22 +162,6 @@ const HeadCells = [
     align: "center" as AlignType,
   },
 ];
-
-const TabPanel = (props) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-};
 
 export default function Leaderboard() {
   const { address } = useAuth();
@@ -453,6 +435,9 @@ export default function Leaderboard() {
                           <TableCell align="center">
                             <Typography fontSize={18}>Rank</Typography>
                           </TableCell>
+                          <TableCell align="center">
+                            <Typography fontSize={18}>Player</Typography>
+                          </TableCell>
                           {HeadCells.map((headCell) => (
                             <TableCell
                               key={headCell.key}
@@ -515,7 +500,22 @@ export default function Leaderboard() {
                               scope="row"
                               align="center"
                             >
-                              {minimizeAddress(row.WalletAddress, 6, -4)}
+                              <CardHeader
+                                avatar={
+                                  <Avatar
+                                    src={row.avatar}
+                                    alt={
+                                      row.UserName ||
+                                      minimizeAddress(row.WalletAddress, 6, -4)
+                                    }
+                                  />
+                                }
+                                title={
+                                  row.UserName ||
+                                  minimizeAddress(row.WalletAddress, 6, -4)
+                                }
+                                sx={{ padding: 0 }}
+                              />
                             </TableCell>
                             <TableCell align="center">
                               {row.PlayerScore}

@@ -16,14 +16,14 @@ const getRanking = (data) => {
     return row;
   });
   return data;
-}
+};
 
 const ApiService = {
-  registerUser(address) {
+  registerWallet(address) {
     return ApiInstance.post(`/game/`, {
       WalletAddress: address.toLowerCase(),
-      UserName: address.toLowerCase(),
-      EMail: address.toLowerCase(),
+      UserName: "",
+      EMail: "",
       PlayerScore: 0,
       DragonBalls: 0,
       FireballsHit: 0,
@@ -70,6 +70,21 @@ const ApiService = {
       },
     })
       .then((res) => getRanking(res.data))
+      .catch((err) => Promise.reject(err));
+  },
+  savePlayer(user) {
+    if (user.address) {
+      return ApiInstance.put(`/player/${user.address}/`, user)
+        .then((res) => res)
+        .catch((err) => Promise.reject(err));
+    }
+    return ApiInstance.post("/player/", user)
+      .then((res) => res)
+      .catch((err) => Promise.reject(err));
+  },
+  getPlayer(address) {
+    return ApiInstance.get(`/player/${address}/`)
+      .then((res) => res.data)
       .catch((err) => Promise.reject(err));
   },
 };

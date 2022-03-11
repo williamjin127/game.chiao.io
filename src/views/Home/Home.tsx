@@ -30,7 +30,7 @@ export default function Home() {
 
   const fetchInfo = async () => {
     if (hasPermission()) {
-      await ApiService.registerUser(address);
+      await ApiService.registerWallet(address);
     }
   };
 

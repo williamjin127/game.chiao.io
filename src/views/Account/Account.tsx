@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Web3 from "web3";
 import {
   Avatar,
   Container,
@@ -14,19 +13,20 @@ import {
   Edit as EditIcon,
   FileCopy as FileCopyIcon,
 } from "@mui/icons-material";
+
 import { useContracts } from "../../contexts/Web3Context";
 import useAuth from "../../hooks/useAuth";
-import { formatBalance } from "../../helper/utils";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import ProfileWrapper from "./Style";
+import ApiService from "../../helper/api";
+import { useSnackbar } from "../../contexts/Snackbar";
 
 interface IUser {
-  id: number;
-  fullName: string;
+  address: number;
+  username: string;
   email: string;
-  image: any;
-  phoneNumber: string;
-  bio: string;
+  avatar: any;
+  phone: string;
 }
 
 const StyledTextValidator = styled(TextValidator)(({ theme }) => ({
@@ -49,42 +49,43 @@ const StyledTextValidator = styled(TextValidator)(({ theme }) => ({
 }));
 
 export default function Account() {
-  const { address, chainId } = useAuth();
-  const {
-    contracts: { tokenContract },
-  } = useContracts();
-  const [balance, setBalance] = useState(0);
+  const { address } = useAuth();
+  const { balance } = useContracts();
+  const { showSnackbar } = useSnackbar();
+
   const [user, setUser] = useState<IUser>({} as IUser);
-  const [isUpdating, setIsUpdating] = useState(false);
   const [copyText, setCopyText] = useState("");
 
   useEffect(() => {
     fetchUserData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    fetchBalance();
-  }, [address, chainId, tokenContract]);
-
-  const fetchBalance = async () => {
-    if (!tokenContract || !address) {
-      setBalance(0);
-      return;
-    }
-    // Temp code
-    if (parseInt(chainId) !== 1 && parseInt(chainId) !== 3) {
-      setBalance(0);
-      return;
-    }
-
-    const balance = await tokenContract.methods.balanceOf(address).call();
-    const balanceCHIAO = parseInt(Web3.utils.fromWei(`${balance}`, "ether"));
-    setBalance(balanceCHIAO);
+  const fetchUserData = async () => {
+    const player = await ApiService.getPlayer(address);
+    setUser({
+      address: player.address,
+      username: player.username,
+      email: player.email,
+      avatar: player.avatar,
+      phone: player.phone,
+    })
   };
 
-  const fetchUserData = async () => {};
-
-  const handleUserUpdate = () => {};
+  const handleUserUpdate = async () => {
+    try {
+      console.log(user);
+      if (!user.address) {
+        user.address = address;
+      }
+      await ApiService.savePlayer(user);
+    } catch (err) {
+      showSnackbar({
+        severity: "error",
+        message: "Wrong input",
+      });
+    }
+  };
 
   const handleChange = (event) => {
     event.persist();
@@ -99,14 +100,14 @@ export default function Account() {
 
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
-      setUser({ ...user, image: fileReader.result });
+      setUser({ ...user, avatar: fileReader.result });
     };
 
     fileReader.readAsDataURL(file);
   };
 
   const handleImageDelete = () => {
-    setUser({ ...user, image: null });
+    setUser({ ...user, avatar: null });
   };
 
   const handleAddressCopy = () => {
@@ -136,7 +137,7 @@ export default function Account() {
             <Typography fontSize={20} color="#fff">
               Balance:{" "}
               <span className="chiao-value">
-                {formatBalance(balance)} (ETH)
+                {balance} (CHIAO)
               </span>
             </Typography>
           </Grid>
@@ -147,8 +148,8 @@ export default function Account() {
               <Grid item>
                 <Avatar
                   sx={{ width: 200, height: 200 }}
-                  src={user.image}
-                  alt={user.fullName}
+                  src={user.avatar}
+                  alt={user.username}
                 />
                 <input
                   accept="image/*"
@@ -175,13 +176,11 @@ export default function Account() {
             <ValidatorForm onSubmit={handleUserUpdate}>
               <StyledTextValidator
                 className="form-control"
-                label="Full Name"
+                label="Username"
                 onChange={handleChange}
                 type="text"
-                name="fullName"
-                value={user.fullName}
-                validators={["required"]}
-                errorMessages={["this field is required"]}
+                name="username"
+                value={user.username || ''}
               />
               <StyledTextValidator
                 className="form-control"
@@ -189,31 +188,15 @@ export default function Account() {
                 onChange={handleChange}
                 type="text"
                 name="email"
-                value={user.email}
-                validators={["required"]}
-                errorMessages={["this field is required"]}
+                value={user.email || ''}
               />
               <StyledTextValidator
                 className="form-control"
                 label="Phone"
                 onChange={handleChange}
                 type="text"
-                name="phoneNumber"
-                value={user.phoneNumber}
-                validators={["required"]}
-                errorMessages={["this field is required"]}
-              />
-              <StyledTextValidator
-                className="form-control"
-                label="Bio"
-                onChange={handleChange}
-                type="text"
-                name="bio"
-                value={user.bio}
-                rows={6}
-                multiline={true}
-                validators={["required"]}
-                errorMessages={["this field is required"]}
+                name="phone"
+                value={user.phone || ''}
               />
 
               <Button variant="contained" color="secondary" type="submit">
