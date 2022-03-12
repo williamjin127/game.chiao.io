@@ -72,13 +72,16 @@ const ApiService = {
       .then((res) => getRanking(res.data))
       .catch((err) => Promise.reject(err));
   },
-  savePlayer(user) {
+  savePlayer(user, address=null) {
     if (user.address) {
+      if (typeof user.avatar === 'string' && !user.avatar.includes('data:image')) {
+        delete user.avatar;
+      }
       return ApiInstance.put(`/player/${user.address}/`, user)
         .then((res) => res)
         .catch((err) => Promise.reject(err));
     }
-    return ApiInstance.post("/player/", user)
+    return ApiInstance.post("/player/", { ...user, address} )
       .then((res) => res)
       .catch((err) => Promise.reject(err));
   },

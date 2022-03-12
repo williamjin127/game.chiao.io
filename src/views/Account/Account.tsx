@@ -74,11 +74,11 @@ export default function Account() {
 
   const handleUserUpdate = async () => {
     try {
-      console.log(user);
       if (!user.address) {
-        user.address = address;
+        await ApiService.savePlayer(user, address);
+      } else {
+        await ApiService.savePlayer(user);
       }
-      await ApiService.savePlayer(user);
     } catch (err) {
       showSnackbar({
         severity: "error",
