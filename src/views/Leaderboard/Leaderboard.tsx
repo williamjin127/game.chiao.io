@@ -252,9 +252,7 @@ export default function Leaderboard() {
       }
 
       setPage(page);
-      if (next === null) {
-        setHasNextPage(false);
-      }
+      setHasNextPage(next !== null);
     } catch (err) {
       console.log(err);
     }
