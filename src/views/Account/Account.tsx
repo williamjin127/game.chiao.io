@@ -79,6 +79,10 @@ export default function Account() {
       } else {
         await ApiService.savePlayer(user);
       }
+      showSnackbar({
+        severity: "info",
+        message: "Saved!",
+      });
     } catch (err) {
       showSnackbar({
         severity: "error",

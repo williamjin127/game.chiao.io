@@ -74,10 +74,11 @@ const ApiService = {
   },
   savePlayer(user, address=null) {
     if (user.address) {
-      if (typeof user.avatar === 'string' && !user.avatar.includes('data:image')) {
-        delete user.avatar;
+      let postUser = JSON.parse(JSON.stringify(user));
+      if (typeof user.avatar === 'string' && !user.avatar.startsWith('data:image/')) {
+        delete postUser.avatar;
       }
-      return ApiInstance.put(`/player/${user.address}/`, user)
+      return ApiInstance.put(`/player/${postUser.address}/`, postUser)
         .then((res) => res)
         .catch((err) => Promise.reject(err));
     }
